@@ -75,14 +75,16 @@ resource "aws_iam_role_policy_attachment" "codepipeline-attach" {
 }
 
 resource "aws_s3_bucket" "artifact_bucket" {
+  force_destroy = true
 }
 
-# CodePipeline 
+# CodePipeline
 
 resource "aws_codepipeline" "pipeline" {
   depends_on = [
     aws_codebuild_project.codebuild,
-    aws_codecommit_repository.source_repo
+    aws_codecommit_repository.source_repo,
+    null_resource.push_petcliniccode
   ]
   name     = "${var.source_repo_name}-${var.source_repo_branch}-Pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
